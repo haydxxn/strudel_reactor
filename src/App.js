@@ -68,14 +68,17 @@ const handleD3Data = (event) => {
 
 export default function StrudelDemo() {
   const [songText, setSongText] = useState(stranger_tune);
+  const [isPlaying, setIsPlaying] = useState(false);
   const hasRun = useRef(false);
 
   const handlePlay = () => {
     globalEditor.evaluate();
+    setIsPlaying(true);
   };
 
   const handleStop = () => {
     globalEditor.stop();
+    setIsPlaying(false);
   };
 
   const handleSongTextChange = (event) => {
@@ -126,42 +129,45 @@ export default function StrudelDemo() {
 
   return (
     <div>
-      <h2>Strudel Demo</h2>
+      <h2 className="text-center my-4">Strudel Demo</h2>
       <main>
         <div className="container-fluid">
-          <div className="row">
-            <div
-              className="col-md-8"
-              style={{ maxHeight: "50vh", overflowY: "auto" }}
-            >
+          <div className="row gap-4" style={{ margin: "5px" }}>
+            <div className="col-lg preprocess-section">
               <PreprocessTextarea
                 songText={songText}
                 onChange={handleSongTextChange}
               />
+              <ProcButtons />
             </div>
-            <div className="col-md-4">
-              <nav>
-                <ProcButtons />
-                <br />
-                <PlayButtons onPlay={handlePlay} onStop={handleStop} />
-              </nav>
-            </div>
-          </div>
-          <div className="row">
-            <div
-              className="col-md-8"
-              style={{ maxHeight: "50vh", overflowY: "auto" }}
-            >
+            <div className="col-lg editor-section">
+              <label htmlFor="editor" className="form-label">
+                Strudel Code
+              </label>
               <div id="editor" />
               <div id="output" />
-            </div>
-            <div className="col-md-4">
-              <DJButtons />
             </div>
           </div>
         </div>
         <canvas id="roll"></canvas>
       </main>
+      <div className="bottom-bar">
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-sm-3">
+              <PlayButtons
+                onPlay={handlePlay}
+                onStop={handleStop}
+                isPlaying={isPlaying}
+              />
+            </div>
+            <div className="col-sm-6">
+              <DJButtons />
+            </div>
+            <div className="col-sm-3">Save & Load</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

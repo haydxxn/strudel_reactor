@@ -1,7 +1,7 @@
 const ProcButtons = () => {
   return (
     <>
-      <div className="btn-group" role="group" aria-label="Proc Buttons">
+      <div className="btn-group mt-2" role="group" aria-label="Proc Buttons">
         <button id="process" className="btn btn-outline-primary">
           Preprocess
         </button>

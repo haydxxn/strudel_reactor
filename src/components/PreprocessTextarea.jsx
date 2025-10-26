@@ -6,7 +6,7 @@ const PreprocessTextarea = ({ songText, onChange }) => {
       </label>
       <textarea
         className="form-control"
-        rows="15"
+        rows="19"
         id="proc"
         defaultValue={songText}
         onChange={onChange}
