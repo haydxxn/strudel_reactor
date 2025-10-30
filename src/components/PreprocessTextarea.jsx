@@ -10,7 +10,7 @@ const PreprocessTextarea = ({ songText, onChange }) => {
         id="proc"
         defaultValue={songText}
         onChange={onChange}
-      ></textarea>
+      />
     </>
   );
 };
