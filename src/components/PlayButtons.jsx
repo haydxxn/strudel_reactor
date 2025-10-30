@@ -1,4 +1,4 @@
-const PlayButtons = ({ onPlay, onStop, isPlaying }) => {
+const PlayButtons = ({ onPlay, onStop, isPlaying, onVolumeChange, volume }) => {
   const handleClick = () => {
     if (isPlaying) {
       onStop();
@@ -42,8 +42,10 @@ const PlayButtons = ({ onPlay, onStop, isPlaying }) => {
               className="form-range"
               id="volume"
               min="0"
-              max="100"
-              defaultValue="50"
+              max="1"
+              step="0.01"
+              defaultValue={volume}
+              onChange={(event) => onVolumeChange(event.target.value)}
             />
           </div>
         </div>

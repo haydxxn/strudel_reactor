@@ -68,6 +68,7 @@ const handleD3Data = (event) => {
 
 export default function StrudelDemo() {
   const [songText, setSongText] = useState(stranger_tune);
+  const [volume, setVolume] = useState(1);
   const [isPlaying, setIsPlaying] = useState(false);
   const hasRun = useRef(false);
 
@@ -85,6 +86,56 @@ export default function StrudelDemo() {
     console.log(event.target.value);
     setSongText(event.target.value);
   };
+
+  const handleProcess = () => {
+    console.log(songText);
+  };
+
+  const handleProcessAndPlay = () => {
+    handleProcess();
+    globalEditor.evaluate();
+    setIsPlaying(true);
+  };
+
+  useEffect(() => {
+    console.log(volume);
+    const volumeSyntax = `all(x => x.gain(${volume}))`;
+
+    const lines = songText.split("\n");
+    let found = false;
+
+    const newLines = lines.map((line) => {
+      if (line.includes("all(x => x.gain(")) {
+        // Check if the line is commented (starts with // after trimming whitespace)
+        // Don't need to replace the gain syntax if it's commented
+        const trimmedLine = line.trim();
+        const isCommented = trimmedLine.startsWith("//");
+
+        // Only replace if the line is NOT commented
+        if (!isCommented) {
+          found = true;
+          // Replace all(x => x.gain(...)) with the new volume syntax
+          const updatedLine = line.replace(
+            /all\(x\s*=>\s*x\.gain\([^)]*(?:\([^)]*\))*[^)]*\)\)/g,
+            volumeSyntax
+          );
+          return updatedLine;
+        }
+      }
+      return line;
+    });
+
+    if (found) {
+      setSongText(newLines.join("\n"));
+    } else {
+      // Append new gain syntax at the end
+      setSongText(songText + "\n" + volumeSyntax);
+    }
+
+    if (isPlaying) {
+      globalEditor.evaluate();
+    }
+  }, [volume]);
 
   useEffect(() => {
     if (!hasRun.current) {
@@ -138,7 +189,10 @@ export default function StrudelDemo() {
                 songText={songText}
                 onChange={handleSongTextChange}
               />
-              <ProcButtons />
+              <ProcButtons
+                onProcess={handleProcess}
+                onProcessAndPlay={handleProcessAndPlay}
+              />
             </div>
             <div className="col-lg editor-section">
               <label htmlFor="editor" className="form-label">
@@ -159,6 +213,8 @@ export default function StrudelDemo() {
                 onPlay={handlePlay}
                 onStop={handleStop}
                 isPlaying={isPlaying}
+                volume={volume}
+                onVolumeChange={setVolume}
               />
             </div>
             <div className="col-sm-6">
