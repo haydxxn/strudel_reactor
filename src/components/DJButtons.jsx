@@ -1,4 +1,4 @@
-const DJButtons = () => {
+const DJButtons = ({ patterns }) => {
   return (
     <>
       <div className="row">
@@ -24,116 +24,25 @@ const DJButtons = () => {
             Toggle Pattern
           </label>
           <div className="row px-3">
-            <div className="col-sm-3 form-check form-switch">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                role="switch"
-                id="switchCheck1"
-              />
-              <label className="form-check-label" htmlFor="switchCheck1">
-                P1
-              </label>
-            </div>
-            <div className="col-sm-3 form-check form-switch">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                role="switch"
-                id="switchCheck2"
-              />
-              <label className="form-check-label" htmlFor="switchCheck2">
-                P2
-              </label>
-            </div>
-            <div className="col-sm-3 form-check form-switch">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                role="switch"
-                id="switchCheck2"
-              />
-              <label className="form-check-label" htmlFor="switchCheck2">
-                P2
-              </label>
-            </div>
-            <div className="col-sm-3 form-check form-switch">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                role="switch"
-                id="switchCheck2"
-              />
-              <label className="form-check-label" htmlFor="switchCheck2">
-                P2
-              </label>
-            </div>
-            <div className="col-sm-3 form-check form-switch">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                role="switch"
-                id="switchCheck2"
-              />
-              <label className="form-check-label" htmlFor="switchCheck2">
-                P2
-              </label>
-            </div>
-            <div className="col-sm-3 form-check form-switch">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                role="switch"
-                id="switchCheck2"
-              />
-              <label className="form-check-label" htmlFor="switchCheck2">
-                P2
-              </label>
-            </div>
-            <div className="col-sm-3 form-check form-switch">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                role="switch"
-                id="switchCheck2"
-              />
-              <label className="form-check-label" htmlFor="switchCheck2">
-                P2
-              </label>
-            </div>
-            <div className="col-sm-3 form-check form-switch">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                role="switch"
-                id="switchCheck2"
-              />
-              <label className="form-check-label" htmlFor="switchCheck2">
-                P2
-              </label>
-            </div>
-            <div className="col-sm-3 form-check form-switch">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                role="switch"
-                id="switchCheck2"
-              />
-              <label className="form-check-label" htmlFor="switchCheck2">
-                P2
-              </label>
-            </div>
-            <div className="col-sm-3 form-check form-switch">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                role="switch"
-                id="switchCheck2"
-              />
-              <label className="form-check-label" htmlFor="switchCheck2">
-                P2
-              </label>
-            </div>
+            {patterns.length === 0 ? (
+              <div className="col-sm-3 form-check form-switch">
+                <p>No patterns found</p>
+              </div>
+            ) : (
+              patterns.map((pattern) => (
+                <div className="col-sm-3 form-check form-switch" key={pattern}>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id={pattern}
+                  />
+                  <label className="form-check-label" htmlFor={pattern}>
+                    {pattern}
+                  </label>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

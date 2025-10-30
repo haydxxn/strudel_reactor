@@ -69,6 +69,7 @@ const handleD3Data = (event) => {
 export default function StrudelDemo() {
   const [songText, setSongText] = useState(stranger_tune);
   const [volume, setVolume] = useState(1);
+  const [patterns, setPatterns] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const hasRun = useRef(false);
 
@@ -83,12 +84,22 @@ export default function StrudelDemo() {
   };
 
   const handleSongTextChange = (event) => {
-    console.log(event.target.value);
     setSongText(event.target.value);
   };
 
+  const handlePatternChange = (event) => {
+    const patterns = songText
+      .split("\n")
+      .filter((line) => line.includes("{pattern_"));
+    const parsedPatterns = patterns.map((pattern) => {
+      const patternName = pattern.split("{pattern_")[1].split("}")[0]; // Get the pattern between {pattern_ and }
+      return patternName;
+    });
+    setPatterns(parsedPatterns);
+  };
+
   const handleProcess = () => {
-    console.log(songText);
+    handlePatternChange();
   };
 
   const handleProcessAndPlay = () => {
@@ -218,7 +229,7 @@ export default function StrudelDemo() {
               />
             </div>
             <div className="col-sm-6">
-              <DJButtons />
+              <DJButtons patterns={patterns} />
             </div>
             <div className="col-sm-3">Save & Load</div>
           </div>
