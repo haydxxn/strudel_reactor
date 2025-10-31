@@ -88,14 +88,22 @@ export default function StrudelDemo() {
   };
 
   const handlePatternChange = (event) => {
-    const patterns = songText
-      .split("\n")
-      .filter((line) => line.includes("{pattern_"));
-    const parsedPatterns = patterns.map((pattern) => {
-      const patternName = pattern.split("{pattern_")[1].split("}")[0]; // Get the pattern between {pattern_ and }
-      return patternName;
+    const patternArray = [...patterns];
+    const newSongText = songText.split("\n").map((line) => {
+      if (line.includes("{pattern_")) {
+        const patternName = line.replace("{pattern_", "").replace("}", "");
+        if (!patternArray.includes(patternName.split(":")[0])) {
+          patternArray.push(patternName.split(":")[0]); // Get the pattern name without the colon
+          return patternName;
+        }
+      }
+      return line;
     });
-    setPatterns(parsedPatterns);
+    console.log(newSongText.join("\n"));
+    console.log(patternArray);
+
+    setSongText(newSongText.join("\n"));
+    setPatterns(patternArray);
   };
 
   const handleProcess = () => {
@@ -103,7 +111,7 @@ export default function StrudelDemo() {
   };
 
   const handleProcessAndPlay = () => {
-    handleProcess();
+    handlePatternChange();
     globalEditor.evaluate();
     setIsPlaying(true);
   };
