@@ -1,4 +1,4 @@
-const DJButtons = ({ patterns }) => {
+const DJButtons = ({ patterns, onTogglePattern }) => {
   return (
     <>
       <div className="row">
@@ -30,15 +30,22 @@ const DJButtons = ({ patterns }) => {
               </div>
             ) : (
               patterns.map((pattern) => (
-                <div className="col-sm-3 form-check form-switch" key={pattern}>
+                <div
+                  className="col-sm-3 form-check form-switch"
+                  key={pattern.name}
+                >
                   <input
                     className="form-check-input"
                     type="checkbox"
                     role="switch"
-                    id={pattern}
+                    id={pattern.name}
+                    onChange={(event) =>
+                      onTogglePattern(pattern.name, event.target.checked)
+                    }
+                    checked={pattern.isEnabled}
                   />
-                  <label className="form-check-label" htmlFor={pattern}>
-                    {pattern}
+                  <label className="form-check-label" htmlFor={pattern.name}>
+                    {pattern.name}
                   </label>
                 </div>
               ))

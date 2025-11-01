@@ -92,8 +92,17 @@ export default function StrudelDemo() {
     const newSongText = songText.split("\n").map((line) => {
       if (line.includes("{pattern_")) {
         const patternName = line.replace("{pattern_", "").replace("}", "");
-        if (!patternArray.includes(patternName.split(":")[0])) {
-          patternArray.push(patternName.split(":")[0]); // Get the pattern name without the colon
+        if (
+          !patternArray.some(
+            (pattern) => pattern.name === patternName.split(":")[0]
+          )
+        ) {
+          const newPattern = {
+            name: patternName.split(":")[0], // Get the pattern name without the colon
+            isEnabled: true,
+          };
+          console.log(newPattern);
+          patternArray.push(newPattern);
           return patternName;
         }
       }
@@ -104,6 +113,28 @@ export default function StrudelDemo() {
 
     setSongText(newSongText.join("\n"));
     setPatterns(patternArray);
+  };
+
+  const handleTogglePattern = (patternName, value) => {
+    const patternArray = [...patterns];
+    const newPattern = patternArray.find((p) => p.name === patternName);
+    newPattern.isEnabled = value;
+    setPatterns(patternArray);
+
+    if (value) {
+      const newSongText = songText.replaceAll(
+        `_${patternName}:`,
+        `${patternName}:`
+      );
+      setSongText(newSongText);
+    } else {
+      const newSongText = songText.replaceAll(
+        `${patternName}:`,
+        `_${patternName}:`
+      );
+      setSongText(newSongText);
+    }
+    globalEditor.evaluate();
   };
 
   const handleProcess = () => {
@@ -117,7 +148,6 @@ export default function StrudelDemo() {
   };
 
   useEffect(() => {
-    console.log(volume);
     const volumeSyntax = `all(x => x.gain(${volume}))`;
 
     const lines = songText.split("\n");
@@ -237,7 +267,10 @@ export default function StrudelDemo() {
               />
             </div>
             <div className="col-sm-6">
-              <DJButtons patterns={patterns} />
+              <DJButtons
+                patterns={patterns}
+                onTogglePattern={handleTogglePattern}
+              />
             </div>
             <div className="col-sm-3">Save & Load</div>
           </div>
