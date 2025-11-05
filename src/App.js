@@ -2,7 +2,6 @@ import "./App.css";
 import { useEffect, useRef, useState } from "react";
 import { StrudelMirror } from "@strudel/codemirror";
 import { evalScope } from "@strudel/core";
-import { drawPianoroll } from "@strudel/draw";
 import { initAudioOnFirstClick } from "@strudel/webaudio";
 import { transpiler } from "@strudel/transpiler";
 import {
@@ -12,88 +11,137 @@ import {
 } from "@strudel/webaudio";
 import { registerSoundfonts } from "@strudel/soundfonts";
 import { stranger_tune } from "./tunes";
-import console_monkey_patch, { getD3Data } from "./console-monkey-patch";
+import console_monkey_patch from "./console-monkey-patch";
 import DJButtons from "./components/DJButtons";
 import PlayButtons from "./components/PlayButtons";
 import ProcButtons from "./components/ProcButtons";
 import PreprocessTextarea from "./components/PreprocessTextarea";
+import Graph from "./components/Graph";
 
 let globalEditor = null;
 
-const handleD3Data = (event) => {
-  console.log(event.detail);
-};
-
-// export function SetupButtons() {
-//   document
-//     .getElementById("play")
-//     .addEventListener("click", () => globalEditor.evaluate());
-//   document
-//     .getElementById("stop")
-//     .addEventListener("click", () => globalEditor.stop());
-//   document.getElementById("process").addEventListener("click", () => {
-//     Proc();
-//   });
-//   document.getElementById("process_play").addEventListener("click", () => {
-//     if (globalEditor != null) {
-//       Proc();
-//       globalEditor.evaluate();
-//     }
-//   });
-// }
-
-// export function ProcAndPlay() {
-//   if (globalEditor != null && globalEditor.repl.state.started == true) {
-//     console.log(globalEditor);
-//     Proc();
-//     globalEditor.evaluate();
-//   }
-// }
-
-// export function Proc() {
-//   let proc_text = document.getElementById("proc").value;
-//   let proc_text_replaced = proc_text.replaceAll("<p1_Radio>", ProcessText);
-//   ProcessText(proc_text);
-//   globalEditor.setCode(proc_text_replaced);
-// }
-
-// export function ProcessText(match, ...args) {
-//   let replace = "";
-//   if (document.getElementById("flexRadioDefault2").checked) {
-//     replace = "_";
-//   }
-
-//   return replace;
-// }
-
 export default function StrudelDemo() {
   const [songText, setSongText] = useState(stranger_tune);
+  const [volume, setVolume] = useState(1);
+  const [patterns, setPatterns] = useState([]);
+  const [isPlaying, setIsPlaying] = useState(false);
   const hasRun = useRef(false);
 
   const handlePlay = () => {
     globalEditor.evaluate();
+    setIsPlaying(true);
   };
 
   const handleStop = () => {
     globalEditor.stop();
+    setIsPlaying(false);
   };
 
   const handleSongTextChange = (event) => {
-    console.log(event.target.value);
     setSongText(event.target.value);
   };
 
+  const handlePatternChange = (event) => {
+    const patternArray = [...patterns];
+    const newSongText = songText.split("\n").map((line) => {
+      if (line.includes("{pattern_")) {
+        const patternName = line.replace("{pattern_", "").replace("}", "");
+        if (
+          !patternArray.some(
+            (pattern) => pattern.name === patternName.split(":")[0]
+          )
+        ) {
+          const newPattern = {
+            name: patternName.split(":")[0], // Get the pattern name without the colon
+            isEnabled: true,
+          };
+          patternArray.push(newPattern);
+          return patternName;
+        }
+      }
+      return line;
+    });
+
+    setSongText(newSongText.join("\n"));
+    setPatterns(patternArray);
+  };
+
+  const handleTogglePattern = (patternName, value) => {
+    const patternArray = [...patterns];
+    const newPattern = patternArray.find((p) => p.name === patternName);
+    newPattern.isEnabled = value;
+    setPatterns(patternArray);
+
+    let newSongText;
+    if (value) {
+      newSongText = songText.replaceAll(`_${patternName}:`, `${patternName}:`);
+    } else {
+      newSongText = songText.replaceAll(`${patternName}:`, `_${patternName}:`);
+    }
+
+    setSongText(newSongText);
+    globalEditor.setCode(newSongText);
+
+    if (isPlaying) {
+      globalEditor.evaluate();
+    }
+  };
+
+  const handleProcess = () => {
+    handlePatternChange();
+  };
+
+  const handleProcessAndPlay = () => {
+    handlePatternChange();
+    globalEditor.evaluate();
+    setIsPlaying(true);
+  };
+
+  useEffect(() => {
+    const volumeSyntax = `all(x => x.gain(${volume}))`;
+
+    const lines = songText.split("\n");
+    let found = false;
+
+    const newLines = lines.map((line) => {
+      if (line.includes("all(x => x.gain(")) {
+        // Check if the line is commented (starts with // after trimming whitespace)
+        // Don't need to replace the gain syntax if it's commented
+        const trimmedLine = line.trim();
+        const isCommented = trimmedLine.startsWith("//");
+
+        // Only replace if the line is NOT commented
+        if (!isCommented) {
+          found = true;
+          // Replace all(x => x.gain(...)) with the new volume syntax
+          const updatedLine = line.replace(
+            /all\(x\s*=>\s*x\.gain\([^)]*(?:\([^)]*\))*[^)]*\)\)/g,
+            volumeSyntax
+          );
+          return updatedLine;
+        }
+      }
+      return line;
+    });
+
+    if (found) {
+      setSongText(newLines.join("\n"));
+    } else {
+      // Append new gain syntax at the end
+      setSongText(songText + "\n" + volumeSyntax);
+    }
+
+    if (isPlaying) {
+      globalEditor.evaluate();
+    }
+  }, [volume]);
+
   useEffect(() => {
     if (!hasRun.current) {
-      document.addEventListener("d3Data", handleD3Data);
       console_monkey_patch();
       hasRun.current = true;
       //Code copied from example: https://codeberg.org/uzu/strudel/src/branch/main/examples/codemirror-repl
       //init canvas
-      const canvas = document.getElementById("roll");
-      canvas.width = canvas.width * 2;
-      canvas.height = canvas.height * 2;
-      const drawContext = canvas.getContext("2d");
       const drawTime = [-2, 2]; // time window of drawn haps
       globalEditor = new StrudelMirror({
         defaultOutput: webaudioOutput,
@@ -101,8 +149,6 @@ export default function StrudelDemo() {
         transpiler,
         root: document.getElementById("editor"),
         drawTime,
-        onDraw: (haps, time) =>
-          drawPianoroll({ haps, time, ctx: drawContext, drawTime, fold: 0 }),
         prebake: async () => {
           initAudioOnFirstClick(); // needed to make the browser happy (don't await this here..)
           const loadModules = evalScope(
@@ -125,43 +171,71 @@ export default function StrudelDemo() {
   }, [songText]);
 
   return (
-    <div>
-      <h2>Strudel Demo</h2>
+    <>
+      <h2 className="text-center my-4">Strudel Demo</h2>
       <main>
         <div className="container-fluid">
-          <div className="row">
-            <div
-              className="col-md-8"
-              style={{ maxHeight: "50vh", overflowY: "auto" }}
-            >
+          <div className="row gap-4" style={{ margin: "5px" }}>
+            <div className="col-lg preprocess-section">
               <PreprocessTextarea
                 songText={songText}
                 onChange={handleSongTextChange}
               />
+              <ProcButtons
+                onProcess={handleProcess}
+                onProcessAndPlay={handleProcessAndPlay}
+              />
             </div>
-            <div className="col-md-4">
-              <nav>
-                <ProcButtons />
-                <br />
-                <PlayButtons onPlay={handlePlay} onStop={handleStop} />
-              </nav>
-            </div>
-          </div>
-          <div className="row">
-            <div
-              className="col-md-8"
-              style={{ maxHeight: "50vh", overflowY: "auto" }}
-            >
+            <div className="col-lg editor-section">
+              <label htmlFor="editor" className="form-label">
+                Strudel Code
+              </label>
               <div id="editor" />
               <div id="output" />
             </div>
-            <div className="col-md-4">
-              <DJButtons />
+          </div>
+          <div className="row m-2 mt-4">
+            <div className="form-check form-switch">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="switchCheckDefault"
+              />
+              <label className="form-check-label" htmlFor="switchCheckDefault">
+                Show Graph
+              </label>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-lg">
+              <Graph />
             </div>
           </div>
         </div>
-        <canvas id="roll"></canvas>
       </main>
-    </div>
+      <div className="bottom-bar">
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-sm-3">
+              <PlayButtons
+                onPlay={handlePlay}
+                onStop={handleStop}
+                isPlaying={isPlaying}
+                volume={volume}
+                onVolumeChange={setVolume}
+              />
+            </div>
+            <div className="col-sm-6">
+              <DJButtons
+                patterns={patterns}
+                onTogglePattern={handleTogglePattern}
+              />
+            </div>
+            <div className="col-sm-3">Save & Load</div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
