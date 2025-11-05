@@ -194,6 +194,24 @@ export default function StrudelDemo() {
               <div id="output" />
             </div>
           </div>
+          <div className="row m-2 mt-4">
+            <div className="form-check form-switch">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="switchCheckDefault"
+              />
+              <label className="form-check-label" htmlFor="switchCheckDefault">
+                Show Graph
+              </label>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-lg">
+              <Graph />
+            </div>
+          </div>
         </div>
       </main>
       <div className="bottom-bar">
