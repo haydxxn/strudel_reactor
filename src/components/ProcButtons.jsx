@@ -8,7 +8,7 @@ const ProcButtons = ({ onProcess, onProcessAndPlay }) => {
         </button>
         <button
           id="process_play"
-          className="btn btn-outline-dark"
+          className="btn text-white border border-subtle"
           onClick={onProcessAndPlay}
         >
           <i className="bi bi-play-fill me-2"></i>
