@@ -19,14 +19,14 @@ const PlayButtons = ({ onPlay, onStop, isPlaying, onVolumeChange, volume }) => {
               <>
                 <i
                   className="bi bi-stop-circle"
-                  style={{ fontSize: "2rem", color: "black" }}
+                  style={{ fontSize: "2rem", color: "#1EBA54" }}
                 ></i>
               </>
             ) : (
               <>
                 <i
                   className="bi bi-play-circle"
-                  style={{ fontSize: "2rem", color: "black" }}
+                  style={{ fontSize: "2rem", color: "#1EBA54" }}
                 ></i>
               </>
             )}
