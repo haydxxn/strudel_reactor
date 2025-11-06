@@ -1,5 +1,6 @@
 import "./App.css";
 import { useEffect, useRef, useState } from "react";
+import { Routes, Route } from "react-router-dom";
 import { StrudelMirror } from "@strudel/codemirror";
 import { evalScope } from "@strudel/core";
 import { initAudioOnFirstClick } from "@strudel/webaudio";
@@ -17,10 +18,12 @@ import PlayButtons from "./components/PlayButtons";
 import ProcButtons from "./components/ProcButtons";
 import PreprocessTextarea from "./components/PreprocessTextarea";
 import Graph from "./components/Graph";
+import Navbar from "./components/Navbar";
+import HowToUse from "./routes/HowToUse";
 
 let globalEditor = null;
 
-export default function StrudelDemo() {
+function StrudelDemo() {
   const [songText, setSongText] = useState(stranger_tune);
   const [volume, setVolume] = useState(1);
   const [patterns, setPatterns] = useState([]);
@@ -236,6 +239,18 @@ export default function StrudelDemo() {
           </div>
         </div>
       </div>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<StrudelDemo />} />
+        <Route path="/how-to-use" element={<HowToUse />} />
+      </Routes>
     </>
   );
 }

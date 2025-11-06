@@ -7,10 +7,20 @@ const DJButtons = ({ patterns, onTogglePattern }) => {
             Set Cycles Speed
           </label>
           <div className="input-group mb-3">
-            <span className="input-group-text" id="setCPM">
+            {/* <span className="input-group-text" id="setCPM">
               setCPM
-            </span>
-            <input type="text" className="form-control" placeholder="140" />
+            </span> */}
+            {/* <input type="text" className="form-control" placeholder="140" /> */}
+            <select
+              class="form-select bg-dark text-white border border-dark-subtle"
+              aria-label="Set Cycles Speed"
+            >
+              <option selected>1 (Default)</option>
+              <option value="0.25">0.25x</option>
+              <option value="0.5">0.5x</option>
+              <option value="1.5">1.5x</option>
+              <option value="2">2x</option>
+            </select>
           </div>
         </div>
         <div className="col-sm-8">
