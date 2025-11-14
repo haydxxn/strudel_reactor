@@ -20,6 +20,7 @@ import PreprocessTextarea from "./components/PreprocessTextarea";
 import Graph from "./components/Graph";
 import Navbar from "./components/Navbar";
 import HowToUse from "./routes/HowToUse";
+import SaveButton from "./components/SaveButton";
 
 let globalEditor = null;
 
@@ -235,7 +236,7 @@ function StrudelDemo() {
                 onTogglePattern={handleTogglePattern}
               />
             </div>
-            <div className="col-sm-3">Save & Load</div>
+            <SaveButton />
           </div>
         </div>
       </div>

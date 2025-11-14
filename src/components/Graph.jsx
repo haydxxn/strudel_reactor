@@ -53,7 +53,7 @@ const Graph = () => {
     w = w - 40;
     let h = svg.node().getBoundingClientRect().height;
     h = h - 25;
-    const barWidth = w / rngArray.length;
+    const barWidth = w / rngArray.length; // width of each bar
 
     let yScale = d3.scaleLinear().domain([0, maxValue]).range([h, 0]);
 
@@ -66,7 +66,6 @@ const Graph = () => {
         .attr("transform", `translate(30, 3)`);
     }
 
-    // Create gradient
     if (svg.select("#line-gradient").empty()) {
       chartGroup
         .append("linearGradient")
