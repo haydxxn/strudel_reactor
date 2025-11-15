@@ -21,6 +21,7 @@ import Graph from "./components/Graph";
 import Navbar from "./components/Navbar";
 import HowToUse from "./routes/HowToUse";
 import SaveButton from "./components/SaveButton";
+import Preprocess from "./utils/PreprocessLogic";
 
 let globalEditor = null;
 
@@ -91,54 +92,62 @@ function StrudelDemo() {
     }
   };
 
-  const handleProcess = () => {
-    handlePatternChange();
-  };
+  // const handleProcess = () => {
+  //   handlePatternChange();
+  // };
 
   const handleProcessAndPlay = () => {
-    handlePatternChange();
-    globalEditor.evaluate();
-    setIsPlaying(true);
+    const matches = Preprocess({ inputText: songText, volume });
+    console.log(matches);
+    // handlePatternChange();
+    // globalEditor.evaluate();
+    // setIsPlaying(true);
   };
 
   useEffect(() => {
-    const volumeSyntax = `all(x => x.gain(${volume}))`;
-
-    const lines = songText.split("\n");
-    let found = false;
-
-    const newLines = lines.map((line) => {
-      if (line.includes("all(x => x.gain(")) {
-        // Check if the line is commented (starts with // after trimming whitespace)
-        // Don't need to replace the gain syntax if it's commented
-        const trimmedLine = line.trim();
-        const isCommented = trimmedLine.startsWith("//");
-
-        // Only replace if the line is NOT commented
-        if (!isCommented) {
-          found = true;
-          // Replace all(x => x.gain(...)) with the new volume syntax
-          const updatedLine = line.replace(
-            /all\(x\s*=>\s*x\.gain\([^)]*(?:\([^)]*\))*[^)]*\)\)/g,
-            volumeSyntax
-          );
-          return updatedLine;
-        }
-      }
-      return line;
-    });
-
-    if (found) {
-      setSongText(newLines.join("\n"));
-    } else {
-      // Append new gain syntax at the end
-      setSongText(songText + "\n" + volumeSyntax);
-    }
-
-    if (isPlaying) {
-      globalEditor.evaluate();
-    }
+    // if (isPlaying) {
+    handleProcessAndPlay();
+    // }
   }, [volume]);
+
+  // useEffect(() => {
+  //   const volumeSyntax = `all(x => x.gain(${volume}))`;
+
+  //   const lines = songText.split("\n");
+  //   let found = false;
+
+  //   const newLines = lines.map((line) => {
+  //     if (line.includes("all(x => x.gain(")) {
+  //       // Check if the line is commented (starts with // after trimming whitespace)
+  //       // Don't need to replace the gain syntax if it's commented
+  //       const trimmedLine = line.trim();
+  //       const isCommented = trimmedLine.startsWith("//");
+
+  //       // Only replace if the line is NOT commented
+  //       if (!isCommented) {
+  //         found = true;
+  //         // Replace all(x => x.gain(...)) with the new volume syntax
+  //         const updatedLine = line.replace(
+  //           /all\(x\s*=>\s*x\.gain\([^)]*(?:\([^)]*\))*[^)]*\)\)/g,
+  //           volumeSyntax
+  //         );
+  //         return updatedLine;
+  //       }
+  //     }
+  //     return line;
+  //   });
+
+  //   if (found) {
+  //     setSongText(newLines.join("\n"));
+  //   } else {
+  //     // Append new gain syntax at the end
+  //     setSongText(songText + "\n" + volumeSyntax);
+  //   }
+
+  //   if (isPlaying) {
+  //     globalEditor.evaluate();
+  //   }
+  // }, [volume]);
 
   useEffect(() => {
     if (!hasRun.current) {
@@ -185,10 +194,7 @@ function StrudelDemo() {
                 songText={songText}
                 onChange={handleSongTextChange}
               />
-              <ProcButtons
-                onProcess={handleProcess}
-                onProcessAndPlay={handleProcessAndPlay}
-              />
+              <ProcButtons onProcessAndPlay={handleProcessAndPlay} />
             </div>
             <div className="col-lg editor-section">
               <label htmlFor="editor" className="form-label">
