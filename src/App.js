@@ -28,7 +28,7 @@ let globalEditor = null;
 function StrudelDemo() {
   const [songText, setSongText] = useState(stranger_tune);
   const [volume, setVolume] = useState(1);
-  const [patterns, setPatterns] = useState([]);
+  const [instruments, setInstruments] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const hasRun = useRef(false);
 
@@ -46,50 +46,47 @@ function StrudelDemo() {
     setSongText(event.target.value);
   };
 
-  const handlePatternChange = (event) => {
-    const patternArray = [...patterns];
-    const newSongText = songText.split("\n").map((line) => {
-      if (line.includes("{pattern_")) {
-        const patternName = line.replace("{pattern_", "").replace("}", "");
-        if (
-          !patternArray.some(
-            (pattern) => pattern.name === patternName.split(":")[0]
-          )
-        ) {
-          const newPattern = {
-            name: patternName.split(":")[0], // Get the pattern name without the colon
-            isEnabled: true,
-          };
-          patternArray.push(newPattern);
-          return patternName;
-        }
-      }
-      return line;
-    });
+  // const handlePatternChange = (event) => {
+  //   const patternArray = [...patterns];
+  //   const newSongText = songText.split("\n").map((line) => {
+  //     if (line.includes("{pattern_")) {
+  //       const patternName = line.replace("{pattern_", "").replace("}", "");
+  //       if (
+  //         !patternArray.some(
+  //           (pattern) => pattern.name === patternName.split(":")[0]
+  //         )
+  //       ) {
+  //         const newPattern = {
+  //           name: patternName.split(":")[0], // Get the pattern name without the colon
+  //           isEnabled: true,
+  //         };
+  //         patternArray.push(newPattern);
+  //         return patternName;
+  //       }
+  //     }
+  //     return line;
+  //   });
 
-    setSongText(newSongText.join("\n"));
-    setPatterns(patternArray);
-  };
+  //   setSongText(newSongText.join("\n"));
+  //   setPatterns(patternArray);
+  // };
 
-  const handleTogglePattern = (patternName, value) => {
-    const patternArray = [...patterns];
-    const newPattern = patternArray.find((p) => p.name === patternName);
-    newPattern.isEnabled = value;
-    setPatterns(patternArray);
-
-    let newSongText;
-    if (value) {
-      newSongText = songText.replaceAll(`_${patternName}:`, `${patternName}:`);
-    } else {
-      newSongText = songText.replaceAll(`${patternName}:`, `_${patternName}:`);
-    }
-
-    setSongText(newSongText);
-    globalEditor.setCode(newSongText);
-
-    if (isPlaying) {
-      globalEditor.evaluate();
-    }
+  const handleToggleInstrument = (instrumentName, value) => {
+    // const patternArray = [...patterns];
+    // const newPattern = patternArray.find((p) => p.name === patternName);
+    // newPattern.isEnabled = value;
+    // setPatterns(patternArray);
+    // let newSongText;
+    // if (value) {
+    //   newSongText = songText.replaceAll(`_${patternName}:`, `${patternName}:`);
+    // } else {
+    //   newSongText = songText.replaceAll(`${patternName}:`, `_${patternName}:`);
+    // }
+    // setSongText(newSongText);
+    // globalEditor.setCode(newSongText);
+    // if (isPlaying) {
+    //   globalEditor.evaluate();
+    // }
   };
 
   // const handleProcess = () => {
@@ -97,8 +94,13 @@ function StrudelDemo() {
   // };
 
   const handleProcessAndPlay = () => {
-    const outputText = Preprocess({ inputText: songText, volume });
-    console.log(outputText);
+    const { outputText, instrumentNames } = Preprocess({
+      inputText: songText,
+      volume,
+    });
+
+    setInstruments(instrumentNames.map((name) => ({ name, isEnabled: true })));
+
     // handlePatternChange();
     globalEditor.setCode(outputText);
     globalEditor.evaluate();
@@ -200,8 +202,8 @@ function StrudelDemo() {
             </div>
             <div className="col-sm-6">
               <DJButtons
-                patterns={patterns}
-                onTogglePattern={handleTogglePattern}
+                instruments={instruments}
+                onToggleInstrument={handleToggleInstrument}
               />
             </div>
             <SaveButton />
