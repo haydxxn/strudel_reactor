@@ -22,6 +22,7 @@ import Navbar from "./components/Navbar";
 import HowToUse from "./routes/HowToUse";
 import SaveButton from "./components/SaveButton";
 import Preprocess from "./utils/PreprocessLogic";
+import { saveConfig } from "./utils/jsonConfig";
 
 let globalEditor = null;
 
@@ -42,16 +43,6 @@ function StrudelDemo() {
     globalEditor.stop();
     setIsPlaying(false);
   };
-
-  const handleSongTextChange = (event) => {
-    setSongText(event.target.value);
-  };
-
-  useEffect(() => {
-    if (songText) {
-      extractInstruments(songText);
-    }
-  }, [songText]);
 
   const extractInstruments = (songText) => {
     const instrumentRegex = /^_?([a-zA-Z0-9_]+):/gm;
@@ -88,6 +79,21 @@ function StrudelDemo() {
     globalEditor.evaluate();
     setIsPlaying(true);
   };
+
+  const handleSaveConfig = () => {
+    saveConfig({
+      songText,
+      volume,
+      cpsMultiplier,
+      instruments,
+    });
+  };
+
+  useEffect(() => {
+    if (songText) {
+      extractInstruments(songText);
+    }
+  }, [songText]);
 
   useEffect(() => {
     if (isPlaying) {
@@ -138,7 +144,7 @@ function StrudelDemo() {
             <div className="col-lg preprocess-section">
               <PreprocessTextarea
                 songText={songText}
-                onChange={handleSongTextChange}
+                onChange={(event) => setSongText(event.target.value)}
               />
               <ProcButtons onProcessAndPlay={handleProcessAndPlay} />
             </div>
@@ -190,7 +196,7 @@ function StrudelDemo() {
                 onCPSChange={setCPSMultiplier}
               />
             </div>
-            <SaveButton />
+            <SaveButton onSave={handleSaveConfig} />
           </div>
         </div>
       </div>

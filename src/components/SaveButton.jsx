@@ -1,13 +1,13 @@
-const SaveButton = () => {
+const SaveButton = ({ onSave }) => {
   return (
     <div className="col-sm-3">
       <div className="mb-2">Save & Load</div>
       <div className="row gap-2">
-        <button type="button" className="btn btn-light col">
-          Load JSON
+        <button type="button" className="btn btn-light col" onClick={onSave}>
+          Save current config
         </button>
         <button type="button" className="btn btn-light col">
-          Save current config
+          Load JSON
         </button>
       </div>
     </div>
