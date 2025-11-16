@@ -1,4 +1,9 @@
-const DJButtons = ({ patterns, onTogglePattern }) => {
+const DJButtons = ({
+  instruments,
+  onToggleInstrument,
+  cpsMultiplier,
+  onCPSChange,
+}) => {
   return (
     <>
       <div className="row">
@@ -7,49 +12,48 @@ const DJButtons = ({ patterns, onTogglePattern }) => {
             Set Cycles Speed
           </label>
           <div className="input-group mb-3">
-            {/* <span className="input-group-text" id="setCPM">
-              setCPM
-            </span> */}
-            {/* <input type="text" className="form-control" placeholder="140" /> */}
             <select
-              class="form-select bg-dark text-white border border-dark-subtle"
+              className="form-select bg-dark text-white border border-dark-subtle"
               aria-label="Set Cycles Speed"
+              onChange={(event) => onCPSChange(event.target.value)}
+              value={cpsMultiplier}
             >
-              <option selected>1 (Default)</option>
               <option value="0.25">0.25x</option>
               <option value="0.5">0.5x</option>
+              <option value="1">1 (Default)</option>
+              <option value="1.25">1.25x</option>
               <option value="1.5">1.5x</option>
               <option value="2">2x</option>
             </select>
           </div>
         </div>
         <div className="col-sm-8">
-          <label htmlFor="togglePattern" className="form-label">
-            Toggle Pattern
+          <label htmlFor="toggleInstrument" className="form-label">
+            Toggle Instrument
           </label>
           <div className="row mt-2 px-3">
-            {patterns.length === 0 ? (
+            {instruments.length === 0 ? (
               <div className="col">
-                <p>No patterns found</p>
+                <p>No instruments found</p>
               </div>
             ) : (
-              patterns.map((pattern) => (
+              instruments.map((instrument) => (
                 <div
                   className="col-sm-3 form-check form-switch"
-                  key={pattern.name}
+                  key={instrument.name}
                 >
                   <input
                     className="form-check-input"
                     type="checkbox"
                     role="switch"
-                    id={pattern.name}
+                    id={instrument.name}
                     onChange={(event) =>
-                      onTogglePattern(pattern.name, event.target.checked)
+                      onToggleInstrument(instrument.name, event.target.checked)
                     }
-                    checked={pattern.isEnabled}
+                    checked={instrument.isEnabled}
                   />
-                  <label className="form-check-label" htmlFor={pattern.name}>
-                    {pattern.name}
+                  <label className="form-check-label" htmlFor={instrument.name}>
+                    {instrument.name}
                   </label>
                 </div>
               ))

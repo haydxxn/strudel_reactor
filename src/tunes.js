@@ -39,7 +39,7 @@ const arpeggiator2 = [
 const pattern = 0
 const bass = 0
 
-{pattern_bassline}:
+bassline:
 note(pick(basslines, bass))
 .sound("supersaw")
 .postgain(2)
@@ -47,9 +47,10 @@ note(pick(basslines, bass))
 .lpf(700)
 .room(0.4)
 .postgain(pick(gain_patterns, pattern))
+.gain(1)
 
 
-{pattern_main_arp}: 
+main_arp: 
 note(pick(arpeggiator1, "<0 1 2 3>/2"))
 .sound("supersaw")
 .lpf(300)
@@ -57,15 +58,17 @@ note(pick(arpeggiator1, "<0 1 2 3>/2"))
 .room(0.6)
 .lpenv(3.3)
 .postgain(pick(gain_patterns, pattern))
+.gain(1)
 
 
-{pattern_drums}:
+drums:
 stack(
   s("tech:5")
   .postgain(6)
   .pcurve(2)
   .pdec(1)
-  .struct(pick(drum_structure, pattern)),
+  .struct(pick(drum_structure, pattern))
+  .gain(1),
 
   s("sh").struct("[x!3 ~!2 x!10 ~]")
   .postgain(0.5).lpf(7000)
@@ -74,10 +77,11 @@ stack(
 
   s("{~ ~ rim ~ cp ~ rim cp ~!2 rim ~ cp ~ < rim ~ >!2}%8 *2")
   .bank("[KorgDDM110, OberheimDmx]").speed(1.2)
-  .postgain(.25),
+  .postgain(.25)
+  .gain(1),
 )
 
-{pattern_drums2}: 
+drums2: 
 stack(
   s("[~ hh]*4").bank("RolandTR808").room(0.3).speed(0.75).gain(1.2),
   s("hh").struct("x*16").bank("RolandTR808")

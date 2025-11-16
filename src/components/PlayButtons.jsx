@@ -45,7 +45,7 @@ const PlayButtons = ({ onPlay, onStop, isPlaying, onVolumeChange, volume }) => {
               max="1"
               step="0.01"
               defaultValue={volume}
-              onChange={(event) => onVolumeChange(event.target.value)}
+              onMouseUp={(event) => onVolumeChange(event.target.value)}
             />
           </div>
         </div>

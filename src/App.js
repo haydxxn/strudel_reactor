@@ -21,14 +21,16 @@ import Graph from "./components/Graph";
 import Navbar from "./components/Navbar";
 import HowToUse from "./routes/HowToUse";
 import SaveButton from "./components/SaveButton";
+import Preprocess from "./utils/PreprocessLogic";
 
 let globalEditor = null;
 
 function StrudelDemo() {
   const [songText, setSongText] = useState(stranger_tune);
   const [volume, setVolume] = useState(1);
-  const [patterns, setPatterns] = useState([]);
+  const [instruments, setInstruments] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [cpsMultiplier, setCPSMultiplier] = useState(1);
   const hasRun = useRef(false);
 
   const handlePlay = () => {
@@ -45,100 +47,53 @@ function StrudelDemo() {
     setSongText(event.target.value);
   };
 
-  const handlePatternChange = (event) => {
-    const patternArray = [...patterns];
-    const newSongText = songText.split("\n").map((line) => {
-      if (line.includes("{pattern_")) {
-        const patternName = line.replace("{pattern_", "").replace("}", "");
-        if (
-          !patternArray.some(
-            (pattern) => pattern.name === patternName.split(":")[0]
-          )
-        ) {
-          const newPattern = {
-            name: patternName.split(":")[0], // Get the pattern name without the colon
-            isEnabled: true,
-          };
-          patternArray.push(newPattern);
-          return patternName;
-        }
-      }
-      return line;
+  useEffect(() => {
+    if (songText) {
+      extractInstruments(songText);
+    }
+  }, [songText]);
+
+  const extractInstruments = (songText) => {
+    const instrumentRegex = /^_?([a-zA-Z0-9_]+):/gm;
+    const instruments = [];
+    const matches = songText.match(instrumentRegex);
+
+    matches.forEach((match) => {
+      const instrumentName = match.split(":")[0];
+      const isEnabled = !instrumentName.startsWith("_");
+
+      const instrument = { name: instrumentName.replace("_", ""), isEnabled };
+      instruments.push(instrument);
     });
-
-    setSongText(newSongText.join("\n"));
-    setPatterns(patternArray);
+    setInstruments(instruments);
   };
 
-  const handleTogglePattern = (patternName, value) => {
-    const patternArray = [...patterns];
-    const newPattern = patternArray.find((p) => p.name === patternName);
-    newPattern.isEnabled = value;
-    setPatterns(patternArray);
+  const handleToggleInstrument = (instrument, isEnabled) => {
+    const newInstruments = instruments.map((i) =>
+      i.name === instrument ? { ...i, isEnabled } : i
+    );
 
-    let newSongText;
-    if (value) {
-      newSongText = songText.replaceAll(`_${patternName}:`, `${patternName}:`);
-    } else {
-      newSongText = songText.replaceAll(`${patternName}:`, `_${patternName}:`);
-    }
-
-    setSongText(newSongText);
-    globalEditor.setCode(newSongText);
-
-    if (isPlaying) {
-      globalEditor.evaluate();
-    }
-  };
-
-  const handleProcess = () => {
-    handlePatternChange();
+    setInstruments(newInstruments);
   };
 
   const handleProcessAndPlay = () => {
-    handlePatternChange();
+    const { outputText } = Preprocess({
+      inputText: songText,
+      volume,
+      cpsMultiplier,
+      instruments,
+    });
+
+    globalEditor.setCode(outputText);
     globalEditor.evaluate();
     setIsPlaying(true);
   };
 
   useEffect(() => {
-    const volumeSyntax = `all(x => x.gain(${volume}))`;
-
-    const lines = songText.split("\n");
-    let found = false;
-
-    const newLines = lines.map((line) => {
-      if (line.includes("all(x => x.gain(")) {
-        // Check if the line is commented (starts with // after trimming whitespace)
-        // Don't need to replace the gain syntax if it's commented
-        const trimmedLine = line.trim();
-        const isCommented = trimmedLine.startsWith("//");
-
-        // Only replace if the line is NOT commented
-        if (!isCommented) {
-          found = true;
-          // Replace all(x => x.gain(...)) with the new volume syntax
-          const updatedLine = line.replace(
-            /all\(x\s*=>\s*x\.gain\([^)]*(?:\([^)]*\))*[^)]*\)\)/g,
-            volumeSyntax
-          );
-          return updatedLine;
-        }
-      }
-      return line;
-    });
-
-    if (found) {
-      setSongText(newLines.join("\n"));
-    } else {
-      // Append new gain syntax at the end
-      setSongText(songText + "\n" + volumeSyntax);
-    }
-
     if (isPlaying) {
-      globalEditor.evaluate();
+      handleProcessAndPlay();
     }
-  }, [volume]);
+  }, [volume, cpsMultiplier, instruments]);
 
   useEffect(() => {
     if (!hasRun.current) {
@@ -185,10 +140,7 @@ function StrudelDemo() {
                 songText={songText}
                 onChange={handleSongTextChange}
               />
-              <ProcButtons
-                onProcess={handleProcess}
-                onProcessAndPlay={handleProcessAndPlay}
-              />
+              <ProcButtons onProcessAndPlay={handleProcessAndPlay} />
             </div>
             <div className="col-lg editor-section">
               <label htmlFor="editor" className="form-label">
@@ -232,8 +184,10 @@ function StrudelDemo() {
             </div>
             <div className="col-sm-6">
               <DJButtons
-                patterns={patterns}
-                onTogglePattern={handleTogglePattern}
+                instruments={instruments}
+                onToggleInstrument={handleToggleInstrument}
+                cpsMultiplier={cpsMultiplier}
+                onCPSChange={setCPSMultiplier}
               />
             </div>
             <SaveButton />
