@@ -45,6 +45,11 @@ function StrudelDemo() {
   };
 
   const extractInstruments = (songText) => {
+    if (!songText) {
+      setInstruments([]);
+      return;
+    }
+
     const instrumentRegex = /^_?([a-zA-Z0-9_]+):/gm;
     const instruments = [];
     const matches = songText.match(instrumentRegex);
@@ -90,12 +95,6 @@ function StrudelDemo() {
   };
 
   useEffect(() => {
-    if (songText) {
-      extractInstruments(songText);
-    }
-  }, [songText]);
-
-  useEffect(() => {
     if (isPlaying) {
       handleProcessAndPlay();
     }
@@ -133,6 +132,7 @@ function StrudelDemo() {
     }
 
     globalEditor.setCode(songText);
+    extractInstruments(songText);
   }, [songText]);
 
   return (
