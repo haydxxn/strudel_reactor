@@ -1,5 +1,15 @@
-const Preprocess = ({ inputText, volume }) => {
+const Preprocess = ({ inputText, volume, cpsMultiplier }) => {
   let outputText = inputText;
+
+  if (cpsMultiplier) {
+    outputText = outputText.replace(
+      /setcps\(([^)]+)\)/g,
+      (match, captureGroup) => {
+        console.log("captureGroup", captureGroup);
+        return `setcps((${captureGroup}) * ${cpsMultiplier})`;
+      }
+    );
+  }
 
   const regex = /[a-zA-Z0-9_]+:\s*\n[\s\S]+?\r?\n(?=[a-zA-Z0-9_]*[:\/])/gm;
   let m;
@@ -13,7 +23,6 @@ const Preprocess = ({ inputText, volume }) => {
     }
 
     m.forEach((match, groupIndex) => {
-      console.log(`Match ${groupIndex}: ${match}`);
       matches.push(match);
 
       // Get the instrument name from the match (words before the colon)
@@ -33,14 +42,12 @@ const Preprocess = ({ inputText, volume }) => {
     );
   });
 
-  console.log("matchesVolume", matchesVolume);
-
-  let matches3 = matches.reduce(
+  const matchesFinal = matches.reduce(
     (text, original, i) => text.replaceAll(original, matchesVolume[i]),
     outputText
   );
 
-  return { outputText: matches3, instrumentNames };
+  return { outputText: matchesFinal, instrumentNames };
 };
 
 export default Preprocess;

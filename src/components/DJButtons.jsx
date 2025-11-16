@@ -1,4 +1,9 @@
-const DJButtons = ({ instruments, onToggleInstrument }) => {
+const DJButtons = ({
+  instruments,
+  onToggleInstrument,
+  cpsMultiplier,
+  onCPSChange,
+}) => {
   return (
     <>
       <div className="row">
@@ -7,17 +12,16 @@ const DJButtons = ({ instruments, onToggleInstrument }) => {
             Set Cycles Speed
           </label>
           <div className="input-group mb-3">
-            {/* <span className="input-group-text" id="setCPM">
-              setCPM
-            </span> */}
-            {/* <input type="text" className="form-control" placeholder="140" /> */}
             <select
-              class="form-select bg-dark text-white border border-dark-subtle"
+              className="form-select bg-dark text-white border border-dark-subtle"
               aria-label="Set Cycles Speed"
+              onChange={(event) => onCPSChange(event.target.value)}
+              value={cpsMultiplier}
             >
-              <option selected>1 (Default)</option>
               <option value="0.25">0.25x</option>
               <option value="0.5">0.5x</option>
+              <option value="1">1 (Default)</option>
+              <option value="1.25">1.25x</option>
               <option value="1.5">1.5x</option>
               <option value="2">2x</option>
             </select>

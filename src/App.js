@@ -30,6 +30,7 @@ function StrudelDemo() {
   const [volume, setVolume] = useState(1);
   const [instruments, setInstruments] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [cpsMultiplier, setCPSMultiplier] = useState(1);
   const hasRun = useRef(false);
 
   const handlePlay = () => {
@@ -97,6 +98,7 @@ function StrudelDemo() {
     const { outputText, instrumentNames } = Preprocess({
       inputText: songText,
       volume,
+      cpsMultiplier,
     });
 
     setInstruments(instrumentNames.map((name) => ({ name, isEnabled: true })));
@@ -111,7 +113,7 @@ function StrudelDemo() {
     if (isPlaying) {
       handleProcessAndPlay();
     }
-  }, [volume]);
+  }, [volume, cpsMultiplier]);
 
   useEffect(() => {
     if (!hasRun.current) {
@@ -204,6 +206,8 @@ function StrudelDemo() {
               <DJButtons
                 instruments={instruments}
                 onToggleInstrument={handleToggleInstrument}
+                cpsMultiplier={cpsMultiplier}
+                onCPSChange={setCPSMultiplier}
               />
             </div>
             <SaveButton />
