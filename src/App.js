@@ -47,63 +47,43 @@ function StrudelDemo() {
     setSongText(event.target.value);
   };
 
-  // const handlePatternChange = (event) => {
-  //   const patternArray = [...patterns];
-  //   const newSongText = songText.split("\n").map((line) => {
-  //     if (line.includes("{pattern_")) {
-  //       const patternName = line.replace("{pattern_", "").replace("}", "");
-  //       if (
-  //         !patternArray.some(
-  //           (pattern) => pattern.name === patternName.split(":")[0]
-  //         )
-  //       ) {
-  //         const newPattern = {
-  //           name: patternName.split(":")[0], // Get the pattern name without the colon
-  //           isEnabled: true,
-  //         };
-  //         patternArray.push(newPattern);
-  //         return patternName;
-  //       }
-  //     }
-  //     return line;
-  //   });
+  useEffect(() => {
+    if (songText) {
+      extractInstruments(songText);
+    }
+  }, [songText]);
 
-  //   setSongText(newSongText.join("\n"));
-  //   setPatterns(patternArray);
-  // };
+  const extractInstruments = (songText) => {
+    const instrumentRegex = /^_?([a-zA-Z0-9_]+):/gm;
+    const instruments = [];
+    const matches = songText.match(instrumentRegex);
 
-  const handleToggleInstrument = (instrumentName, value) => {
-    // const patternArray = [...patterns];
-    // const newPattern = patternArray.find((p) => p.name === patternName);
-    // newPattern.isEnabled = value;
-    // setPatterns(patternArray);
-    // let newSongText;
-    // if (value) {
-    //   newSongText = songText.replaceAll(`_${patternName}:`, `${patternName}:`);
-    // } else {
-    //   newSongText = songText.replaceAll(`${patternName}:`, `_${patternName}:`);
-    // }
-    // setSongText(newSongText);
-    // globalEditor.setCode(newSongText);
-    // if (isPlaying) {
-    //   globalEditor.evaluate();
-    // }
+    matches.forEach((match) => {
+      const instrumentName = match.split(":")[0];
+      const isEnabled = !instrumentName.startsWith("_");
+
+      const instrument = { name: instrumentName.replace("_", ""), isEnabled };
+      instruments.push(instrument);
+    });
+    setInstruments(instruments);
   };
 
-  // const handleProcess = () => {
-  //   handlePatternChange();
-  // };
+  const handleToggleInstrument = (instrument, isEnabled) => {
+    const newInstruments = instruments.map((i) =>
+      i.name === instrument ? { ...i, isEnabled } : i
+    );
+
+    setInstruments(newInstruments);
+  };
 
   const handleProcessAndPlay = () => {
-    const { outputText, instrumentNames } = Preprocess({
+    const { outputText } = Preprocess({
       inputText: songText,
       volume,
       cpsMultiplier,
+      instruments,
     });
 
-    setInstruments(instrumentNames.map((name) => ({ name, isEnabled: true })));
-
-    // handlePatternChange();
     globalEditor.setCode(outputText);
     globalEditor.evaluate();
     setIsPlaying(true);
@@ -113,7 +93,7 @@ function StrudelDemo() {
     if (isPlaying) {
       handleProcessAndPlay();
     }
-  }, [volume, cpsMultiplier]);
+  }, [volume, cpsMultiplier, instruments]);
 
   useEffect(() => {
     if (!hasRun.current) {

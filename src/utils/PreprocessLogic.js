@@ -1,20 +1,33 @@
-const Preprocess = ({ inputText, volume, cpsMultiplier }) => {
+const Preprocess = ({ inputText, volume, cpsMultiplier, instruments }) => {
   let outputText = inputText;
 
+  // Set the cps value based on the selected cps (selection from DJButtons)
   if (cpsMultiplier) {
     outputText = outputText.replace(
       /setcps\(([^)]+)\)/g,
-      (match, captureGroup) => {
-        console.log("captureGroup", captureGroup);
-        return `setcps((${captureGroup}) * ${cpsMultiplier})`;
-      }
+      (match, captureGroup) => `setcps((${captureGroup}) * ${cpsMultiplier})`
     );
   }
+
+  // Add/remove "_" prefix to the instrument name
+  instruments.forEach((instrument) => {
+    if (instrument.isEnabled) {
+      outputText = outputText.replaceAll(
+        `_${instrument.name}:`,
+        `${instrument.name}:`
+      );
+    } else {
+      outputText = outputText.replaceAll(
+        `${instrument.name}:`,
+        `_${instrument.name}:`
+      );
+    }
+  });
 
   const regex = /[a-zA-Z0-9_]+:\s*\n[\s\S]+?\r?\n(?=[a-zA-Z0-9_]*[:\/])/gm;
   let m;
   const matches = [];
-  const instrumentNames = [];
+  // const instrumentsArray = [];
 
   while ((m = regex.exec(outputText)) !== null) {
     // Avoiding infinite loop with zero-width matches
@@ -24,12 +37,6 @@ const Preprocess = ({ inputText, volume, cpsMultiplier }) => {
 
     m.forEach((match, groupIndex) => {
       matches.push(match);
-
-      // Get the instrument name from the match (words before the colon)
-      const instrumentName = match.split(":")[0];
-      if (!instrumentNames.includes(instrumentName)) {
-        instrumentNames.push(instrumentName);
-      }
     });
   }
 
@@ -47,7 +54,7 @@ const Preprocess = ({ inputText, volume, cpsMultiplier }) => {
     outputText
   );
 
-  return { outputText: matchesFinal, instrumentNames };
+  return { outputText: matchesFinal };
 };
 
 export default Preprocess;
