@@ -71,6 +71,7 @@ const Preprocess = ({
       finalOutput = finalOutput + "\nall(x => x.log())";
     }
   } else {
+    // Comment "all(x => x.log())" if graph is hidden
     finalOutput = finalOutput.replace(logPattern, "// all(x => x.log())");
   }
 

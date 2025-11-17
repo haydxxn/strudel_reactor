@@ -8,9 +8,7 @@ const Graph = ({ onToggle }) => {
 
   const handleToggle = (event) => {
     const isChecked = event.target.checked;
-    if (onToggle) {
-      onToggle(isChecked);
-    }
+    onToggle(isChecked);
   };
 
   function LogToNum(input) {
@@ -20,6 +18,7 @@ const Graph = ({ onToggle }) => {
     var stringArray = input.split(/(\s+)/);
 
     for (const item of stringArray) {
+      // Choose the cutoff frequency value from the log data to show in the graph
       if (item.startsWith("cutoff:")) {
         var val = item.substring(7);
         return Number(val);

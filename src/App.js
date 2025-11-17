@@ -24,6 +24,7 @@ import SaveButton from "./components/SaveButton";
 import Preprocess from "./utils/PreprocessLogic";
 import { saveConfig } from "./utils/jsonConfig";
 import Alert from "./components/Alert";
+import { extractInstruments } from "./utils/instrumentUtils";
 
 let globalEditor = null;
 
@@ -54,30 +55,10 @@ function StrudelDemo() {
   const handleSongTextChange = (event) => {
     const newSongText = event.target.value;
     setSongText(newSongText);
-    extractInstruments(newSongText);
-  };
 
-  const extractInstruments = (inputText) => {
-    if (!inputText) {
-      setInstruments([]);
-      return;
-    }
-
-    const instrumentRegex = /^_?([a-zA-Z0-9_]+):/gm;
-    const instruments = [];
-    const matches = inputText.match(instrumentRegex);
-
-    matches.forEach((match) => {
-      const instrumentName = match.split(":")[0];
-      const isEnabled = !instrumentName.startsWith("_");
-
-      const instrument = {
-        name: !isEnabled ? instrumentName.replace("_", "") : instrumentName,
-        isEnabled,
-      };
-      instruments.push(instrument);
-    });
-    setInstruments(instruments);
+    // For everytime the song text changes, extract the instruments (if any) to show in DJButtons
+    const extractedInstruments = extractInstruments(newSongText);
+    setInstruments(extractedInstruments);
   };
 
   const handleToggleInstrument = (instrument, isEnabled) => {
@@ -163,8 +144,9 @@ function StrudelDemo() {
         },
       });
 
-      // Extract instruments from initial songText
-      extractInstruments(songText);
+      // Extract instruments to show in DJButtons from initial songText
+      const extractedInstruments = extractInstruments(songText);
+      setInstruments(extractedInstruments);
     }
 
     globalEditor.setCode(songText);

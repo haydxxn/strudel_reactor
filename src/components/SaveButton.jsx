@@ -3,6 +3,7 @@ import { loadConfig } from "../utils/jsonConfig";
 const SaveButton = ({ onSave, onLoad, onAlert }) => {
   const handleLoad = () => {
     const fileInput = document.getElementById("jsonFileInput");
+    // Because using the custom button to open the file input, we need to open file input by using the click event
     fileInput.click();
   };
 
