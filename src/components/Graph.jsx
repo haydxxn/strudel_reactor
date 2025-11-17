@@ -120,13 +120,34 @@ const Graph = () => {
   }, [rngArray]);
 
   return (
-    <div className="row m-2 mt-4">
-      <svg
-        width="100%"
-        height="100%"
-        className="border border-primary rounded p-2"
-      ></svg>
-    </div>
+    <>
+      <div className="row m-2 mt-4">
+        <div className="form-check form-switch">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            role="switch"
+            id="graphToggle"
+            data-bs-toggle="collapse"
+            data-bs-target="#graphCollapse"
+            aria-expanded="false"
+            aria-controls="graphCollapse"
+          />
+          <label className="form-check-label" htmlFor="graphToggle">
+            Show Graph
+          </label>
+        </div>
+      </div>
+      <div className="collapse" id="graphCollapse">
+        <div className="row m-2">
+          <svg
+            width="100%"
+            height="100%"
+            className="border border-primary rounded p-2"
+          ></svg>
+        </div>
+      </div>
+    </>
   );
 };
 
