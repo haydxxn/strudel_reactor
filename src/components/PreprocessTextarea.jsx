@@ -8,7 +8,7 @@ const PreprocessTextarea = ({ songText, onChange }) => {
         className="form-control bg-dark text-white"
         rows="19"
         id="proc"
-        defaultValue={songText}
+        value={songText}
         onChange={onChange}
       />
     </>

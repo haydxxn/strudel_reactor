@@ -35,8 +35,7 @@ function StrudelDemo() {
   const hasRun = useRef(false);
 
   const handlePlay = () => {
-    globalEditor.evaluate();
-    setIsPlaying(true);
+    handleProcessAndPlay();
   };
 
   const handleStop = () => {
@@ -44,21 +43,30 @@ function StrudelDemo() {
     setIsPlaying(false);
   };
 
-  const extractInstruments = (songText) => {
-    if (!songText) {
+  const handleSongTextChange = (event) => {
+    const newSongText = event.target.value;
+    setSongText(newSongText);
+    extractInstruments(newSongText);
+  };
+
+  const extractInstruments = (inputText) => {
+    if (!inputText) {
       setInstruments([]);
       return;
     }
 
     const instrumentRegex = /^_?([a-zA-Z0-9_]+):/gm;
     const instruments = [];
-    const matches = songText.match(instrumentRegex);
+    const matches = inputText.match(instrumentRegex);
 
     matches.forEach((match) => {
       const instrumentName = match.split(":")[0];
       const isEnabled = !instrumentName.startsWith("_");
 
-      const instrument = { name: instrumentName.replace("_", ""), isEnabled };
+      const instrument = {
+        name: !isEnabled ? instrumentName.replace("_", "") : instrumentName,
+        isEnabled,
+      };
       instruments.push(instrument);
     });
     setInstruments(instruments);
@@ -73,16 +81,20 @@ function StrudelDemo() {
   };
 
   const handleProcessAndPlay = () => {
-    const { outputText } = Preprocess({
-      inputText: songText,
-      volume,
-      cpsMultiplier,
-      instruments,
-    });
+    if (songText) {
+      const { outputText } = Preprocess({
+        inputText: songText,
+        volume,
+        cpsMultiplier,
+        instruments,
+      });
 
-    globalEditor.setCode(outputText);
-    globalEditor.evaluate();
-    setIsPlaying(true);
+      globalEditor.setCode(outputText);
+      globalEditor.evaluate();
+      setIsPlaying(true);
+    } else {
+      console.error("No song text to process");
+    }
   };
 
   const handleSaveConfig = () => {
@@ -92,6 +104,13 @@ function StrudelDemo() {
       cpsMultiplier,
       instruments,
     });
+  };
+
+  const handleLoadConfig = (config) => {
+    setSongText(config.songText);
+    setVolume(config.volume);
+    setCPSMultiplier(config.cpsMultiplier);
+    setInstruments(config.instruments);
   };
 
   useEffect(() => {
@@ -129,10 +148,12 @@ function StrudelDemo() {
           ]);
         },
       });
+
+      // Extract instruments from initial songText
+      extractInstruments(songText);
     }
 
     globalEditor.setCode(songText);
-    extractInstruments(songText);
   }, [songText]);
 
   return (
@@ -144,7 +165,7 @@ function StrudelDemo() {
             <div className="col-lg preprocess-section">
               <PreprocessTextarea
                 songText={songText}
-                onChange={(event) => setSongText(event.target.value)}
+                onChange={handleSongTextChange}
               />
               <ProcButtons onProcessAndPlay={handleProcessAndPlay} />
             </div>
@@ -196,7 +217,7 @@ function StrudelDemo() {
                 onCPSChange={setCPSMultiplier}
               />
             </div>
-            <SaveButton onSave={handleSaveConfig} />
+            <SaveButton onSave={handleSaveConfig} onLoad={handleLoadConfig} />
           </div>
         </div>
       </div>

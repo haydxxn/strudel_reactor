@@ -9,6 +9,7 @@ const Preprocess = ({ inputText, volume, cpsMultiplier, instruments }) => {
     );
   }
 
+  console.log("HERE:", instruments);
   // Add/remove "_" prefix to the instrument name
   instruments.forEach((instrument) => {
     if (instrument.isEnabled) {

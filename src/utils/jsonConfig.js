@@ -11,3 +11,9 @@ export const saveConfig = (config) => {
   a.click();
   URL.revokeObjectURL(url);
 };
+
+export const loadConfig = async (file) => {
+  const text = await file.text();
+  const config = JSON.parse(text);
+  return config;
+};
