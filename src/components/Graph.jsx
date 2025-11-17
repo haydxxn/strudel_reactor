@@ -1,10 +1,17 @@
 import { useState, useEffect } from "react";
 import * as d3 from "d3";
 
-const Graph = () => {
+const Graph = ({ onToggle }) => {
   const [rngArray, setRngArray] = useState([]);
   const maxItems = 50;
   const maxValue = 8000; // cutoff frequency value
+
+  const handleToggle = (event) => {
+    const isChecked = event.target.checked;
+    if (onToggle) {
+      onToggle(isChecked);
+    }
+  };
 
   function LogToNum(input) {
     if (!input) {
@@ -15,7 +22,6 @@ const Graph = () => {
     for (const item of stringArray) {
       if (item.startsWith("cutoff:")) {
         var val = item.substring(7);
-        console.log("val", val);
         return Number(val);
       }
     }
@@ -132,6 +138,7 @@ const Graph = () => {
             data-bs-target="#graphCollapse"
             aria-expanded="false"
             aria-controls="graphCollapse"
+            onChange={handleToggle}
           />
           <label className="form-check-label" htmlFor="graphToggle">
             Show Graph

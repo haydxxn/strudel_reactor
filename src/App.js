@@ -33,6 +33,7 @@ function StrudelDemo() {
   const [instruments, setInstruments] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [cpsMultiplier, setCPSMultiplier] = useState(1);
+  const [showGraph, setShowGraph] = useState(false);
   const [alertConfig, setAlertConfig] = useState({
     isShown: false,
     type: "",
@@ -94,6 +95,7 @@ function StrudelDemo() {
         volume,
         cpsMultiplier,
         instruments,
+        showGraph,
       });
 
       globalEditor.setCode(outputText);
@@ -129,7 +131,7 @@ function StrudelDemo() {
     if (isPlaying) {
       handleProcessAndPlay();
     }
-  }, [volume, cpsMultiplier, instruments]);
+  }, [volume, cpsMultiplier, instruments, showGraph]);
 
   useEffect(() => {
     if (!hasRun.current) {
@@ -199,7 +201,7 @@ function StrudelDemo() {
               <div id="output" />
             </div>
           </div>
-          <Graph />
+          <Graph onToggle={(isShown) => setShowGraph(isShown)} />
         </div>
       </main>
       <div className="bottom-bar">
