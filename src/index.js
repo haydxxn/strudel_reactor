@@ -6,13 +6,19 @@ import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import HowToUse from "./routes/HowToUse";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/how-to-use" element={<HowToUse />} />
+      </Routes>
     </BrowserRouter>
   </React.StrictMode>
 );
