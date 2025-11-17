@@ -1,70 +1,25 @@
-# Getting Started with Create React App
+# Strudel Demo
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was about playing music/sound by using Strudel syntax
 
-## Available Scripts
+## Functions and bootstrap components
 
-In the project directory, you can run:
+1. Play/Stop button: This button is used to play and stop the audio. It is a bootstrap button with a play and stop icon.
+2. Volume slider: This slider is used to change the volume of the audio. It is a bootstrap slider with a volume icon.
+3. CPS selection: This selection is used to change the speed of the audio. It is a bootstrap selection with a cps icon.
+4. Instruments switches: These switches are used to mute and unmute the instruments. It is a bootstrap input switch with.
+5. Show Graph button: D3 graph is used to show real-time cutoff frequency of the audio.
+6. Save and Load button: These buttons are used to save and load the current audio configuration to a JSON file.
+7. Alerts: Alerts are used to show messages to the user. It is a bootstrap alert with a message icon. When user successfully saved or loaded the configuration, an alert will be shown to the user. Or if user entered invalid input, an alert will be shown to the user.
+8. Collapse: Bootstrap collapse is used to hide and show the D3 graph.
+9. How to use page: This page is used to show the user how to use the project. It is a bootstrap card. Using react-router-dom to navigate to the how to use page.
 
-### `npm start`
+## Decisions
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Why creating another button for uploading files rather than input (type=file)?
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Because I want a custom button to look good rather than using plain input css (custom css of this input file costs more effort).
 
-### `npm test`
+### What kind of data was used to display using D3 graph?
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+I choose "cutoff" value

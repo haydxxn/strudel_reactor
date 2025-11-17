@@ -64,24 +64,17 @@ div {
 .btn-dark {
   background-color: #1db954 !important;
   border-color: #1db954 !important;
-  color: white;
-  font-weight: 600;
-  border-radius: 500px;
-  padding: 8px 32px;
-  transition: all 0.3s ease;
 }
 
 .btn-dark:hover {
   background-color: #1ed760 !important;
   border-color: #1ed760 !important;
-  color: white;
 }
 
 .btn-dark:focus,
 .btn-dark:active {
   background-color: #1aa34a !important;
   border-color: #1aa34a !important;
-  color: white;
   box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.3);
 }
 

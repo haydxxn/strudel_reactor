@@ -35,10 +35,12 @@ const SaveButton = ({ onSave, onLoad, onAlert }) => {
     <div className="col-sm-3">
       <div className="mb-2">Save & Load</div>
       <div className="d-flex gap-2">
-        <button type="button" className="btn btn-light" onClick={onSave}>
+        <button type="button" className="btn btn-dark" onClick={onSave}>
+          <i className="bi bi-download me-2"></i>
           Save current config
         </button>
         <button type="button" className="btn btn-light" onClick={handleLoad}>
+          <i className="bi bi-upload me-2"></i>
           Load Config
         </button>
       </div>
