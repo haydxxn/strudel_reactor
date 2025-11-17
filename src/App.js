@@ -23,6 +23,7 @@ import HowToUse from "./routes/HowToUse";
 import SaveButton from "./components/SaveButton";
 import Preprocess from "./utils/PreprocessLogic";
 import { saveConfig } from "./utils/jsonConfig";
+import Alert from "./components/Alert";
 
 let globalEditor = null;
 
@@ -32,6 +33,12 @@ function StrudelDemo() {
   const [instruments, setInstruments] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [cpsMultiplier, setCPSMultiplier] = useState(1);
+  const [alertConfig, setAlertConfig] = useState({
+    isShown: false,
+    type: "",
+    message: "",
+    icon: "",
+  });
   const hasRun = useRef(false);
 
   const handlePlay = () => {
@@ -93,7 +100,12 @@ function StrudelDemo() {
       globalEditor.evaluate();
       setIsPlaying(true);
     } else {
-      console.error("No song text to process");
+      setAlertConfig({
+        isShown: true,
+        type: "danger",
+        message: "Please enter a song text to process",
+        icon: "exclamation-circle",
+      });
     }
   };
 
@@ -158,9 +170,19 @@ function StrudelDemo() {
 
   return (
     <>
-      <h2 className="text-center my-4">Strudel Demo</h2>
       <main>
         <div className="container-fluid">
+          <h2 className="text-center my-4">Strudel Demo</h2>
+          {alertConfig.isShown && (
+            <Alert
+              type={alertConfig.type}
+              message={alertConfig.message}
+              icon={alertConfig.icon}
+              onClose={() =>
+                setAlertConfig((prev) => ({ ...prev, isShown: false }))
+              }
+            />
+          )}
           <div className="row gap-4" style={{ margin: "5px" }}>
             <div className="col-lg preprocess-section">
               <PreprocessTextarea
@@ -217,7 +239,11 @@ function StrudelDemo() {
                 onCPSChange={setCPSMultiplier}
               />
             </div>
-            <SaveButton onSave={handleSaveConfig} onLoad={handleLoadConfig} />
+            <SaveButton
+              onSave={handleSaveConfig}
+              onLoad={handleLoadConfig}
+              onAlert={setAlertConfig}
+            />
           </div>
         </div>
       </div>

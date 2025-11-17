@@ -1,6 +1,6 @@
 import { loadConfig } from "../utils/jsonConfig";
 
-const SaveButton = ({ onSave, onLoad }) => {
+const SaveButton = ({ onSave, onLoad, onAlert }) => {
   const handleLoad = () => {
     const fileInput = document.getElementById("jsonFileInput");
     fileInput.click();
@@ -12,8 +12,19 @@ const SaveButton = ({ onSave, onLoad }) => {
       try {
         const config = await loadConfig(file);
         onLoad(config);
+        onAlert({
+          isShown: true,
+          type: "success",
+          message: "File loaded successfully",
+          icon: "check-circle",
+        });
       } catch (error) {
-        console.error("Error loading file: " + error.message);
+        onAlert({
+          isShown: true,
+          type: "danger",
+          message: "Error loading file: " + error.message,
+          icon: "exclamation-circle",
+        });
       }
     }
     event.target.value = "";
