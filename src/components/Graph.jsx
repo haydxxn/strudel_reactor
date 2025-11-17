@@ -83,9 +83,9 @@ const Graph = ({ onToggle }) => {
         .attr("y2", yScale(maxValue))
         .selectAll("stop")
         .data([
-          { offset: "0%", color: "#1DB954" },
+          { offset: "0%", color: "#6c5ce7" },
           { offset: "50%", color: "#1ed760" },
-          { offset: "100%", color: "#1aa34a" },
+          { offset: "100%", color: "#fd79a8" },
         ])
         .enter()
         .append("stop")
