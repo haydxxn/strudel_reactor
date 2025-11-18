@@ -18,6 +18,7 @@ export const extractInstruments = (inputText) => {
     const instrumentName = match.split(":")[0];
     const isEnabled = !instrumentName.startsWith("_");
 
+    // Remove any prefix from the instrument name before displaying in DJButtons
     const instrument = {
       name: !isEnabled ? instrumentName.replace("_", "") : instrumentName,
       isEnabled,

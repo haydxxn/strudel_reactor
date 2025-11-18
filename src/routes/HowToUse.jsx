@@ -36,7 +36,7 @@ const HowToUse = () => {
 
               <h4 className="card-title">Toggle the Instruments</h4>
               <p className="card-text">
-                Mute/Unmute the instruments on/off by clicking the switches.
+                Mute/Unmute the instruments by clicking the switches.
               </p>
 
               <h4 className="card-title">Show the Graph</h4>

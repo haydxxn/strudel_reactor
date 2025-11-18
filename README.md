@@ -16,13 +16,25 @@ This project was about playing music/sound by using Strudel syntax
 
 ## Explanations
 
+### How did I implement the change of volume when the slider is moved?
+
+I put the .gain() for every pattern in tunes.js and in PreprocessLogic.jsx, I multiply the gain value with the volume value.
+
+### How did I implement the change of CPS when the selection is changed?
+
+The script must have setcps(xxx) as a global method. I use regex to find and replace the setcps value by multiplying it with the selected CPS value.
+
+### How did I implement the change of instruments when the switches are changed?
+
+I put the instrument name with prefix _, mute is _ prefix, unmute is no prefix. I use regex to find and add/remove the prefix to the instrument name.
+
 ### Why creating another button for uploading files rather than using input (type=file)?
 
 Because I want a custom button for uploading files to look good and have icon rather than using plain input (type=file) (styling css of this input file costs more effort).
 
 ### What kind of data was used to display in D3 graph?
 
-I choose "cutoff" value to display in D3 graph.
+I choose "cutoff" value to display in D3 graph. Because we already have the d3Data event to get the log data, and the log data contains the "cutoff" field. So I just need to add/remove "all(x => x.log())", and extract the "cutoff" value from the log data.
 
 ## Video
 

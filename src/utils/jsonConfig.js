@@ -19,12 +19,14 @@ export const loadConfig = async (file) => {
     throw new Error("Invalid JSON file");
   }
   if (
-    !config.songText ||
-    !config.volume ||
-    !config.cpsMultiplier ||
+    !config.songText &&
+    !config.volume &&
+    !config.cpsMultiplier &&
     !config.instruments
   ) {
-    throw new Error("Invalid JSON file");
+    throw new Error(
+      "Invalid JSON file. Please ensure the JSON file is valid and contains the songText, volume, cpsMultiplier, and instruments properties."
+    );
   }
 
   return config;
