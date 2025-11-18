@@ -28,6 +28,7 @@ const SaveButton = ({ onSave, onLoad, onAlert }) => {
         });
       }
     }
+    // Reset the file input value
     event.target.value = "";
   };
 
@@ -41,7 +42,7 @@ const SaveButton = ({ onSave, onLoad, onAlert }) => {
         </button>
         <button type="button" className="btn btn-light" onClick={handleLoad}>
           <i className="bi bi-upload me-2"></i>
-          Load Config
+          Load config
         </button>
       </div>
       <input

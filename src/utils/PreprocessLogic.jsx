@@ -45,6 +45,7 @@ const Preprocess = ({
     });
   }
 
+  // Replace the volume value in the matches
   const matchesVolume = matches.map((match) => {
     return match.replaceAll(
       /(?<!post)gain\(([\d.]+)\)/g,

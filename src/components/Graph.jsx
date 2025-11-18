@@ -35,7 +35,7 @@ const Graph = ({ onToggle }) => {
 
       const cutoffValues = logData.map((d) => LogToNum(d));
 
-      // Get the last maxItems and display them
+      // Get the last maxItems values and display them
       const newestValues = cutoffValues.slice(-maxItems);
 
       setRngArray(newestValues);
@@ -55,9 +55,9 @@ const Graph = ({ onToggle }) => {
     const svg = d3.select("svg");
 
     let w = svg.node().getBoundingClientRect().width;
-    w = w - 40;
+    w = w - 60;
     let h = svg.node().getBoundingClientRect().height;
-    h = h - 25;
+    h = h - 40;
     const barWidth = w / rngArray.length; // width of each bar
 
     let yScale = d3.scaleLinear().domain([0, maxValue]).range([h, 0]);
@@ -68,7 +68,7 @@ const Graph = ({ onToggle }) => {
       chartGroup = svg
         .append("g")
         .classed("chart-group", true)
-        .attr("transform", `translate(30, 3)`);
+        .attr("transform", `translate(45, 15)`);
     }
 
     if (svg.select("#line-gradient").empty()) {
@@ -109,11 +109,7 @@ const Graph = ({ onToggle }) => {
         .attr("stroke-width", 3);
     }
 
-    path
-      .datum(rngArray)
-      .transition()
-      .duration(50) // smoothtransition
-      .attr("d", lineGenerator);
+    path.datum(rngArray).transition().duration(50).attr("d", lineGenerator);
 
     // Update or create Y axis
     let yAxis = d3.axisLeft(yScale);

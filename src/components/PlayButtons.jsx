@@ -10,11 +10,13 @@ const PlayButtons = ({ onPlay, onStop, isPlaying, onVolumeChange, volume }) => {
   return (
     <>
       <div className="row">
-        <div className="col-3">
-          <label htmlFor="play" className="form-label">
-            Play/Stop
-          </label>
-          <button className="btn btn-outline pt-0" onClick={handleClick}>
+        <div className="col-3 text-center">
+          <div className="row">
+            <label htmlFor="play" className="form-label">
+              Play/Stop
+            </label>
+          </div>
+          <button className="btn btn-outline pt-0 row" onClick={handleClick}>
             {isPlaying ? (
               <>
                 <i

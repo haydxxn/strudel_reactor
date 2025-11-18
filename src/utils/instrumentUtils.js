@@ -1,5 +1,5 @@
 // This function will extract the instruments (drums, bassline, etc.) from the input text
-// And return an array of objects with the instrument name and whether it is enabled or not
+// And return an array of objects with the instrument name and whether it is enabled or not.
 // isEnabled is true if the instrument is not prefixed with "_", and this isEnabled value will be used to set the selected state of switches input in DJButtons
 export const extractInstruments = (inputText) => {
   if (!inputText) {

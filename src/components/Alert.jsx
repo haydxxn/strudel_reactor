@@ -1,4 +1,4 @@
-const Alert = ({ type = "info", message, icon, onClose }) => {
+const Alert = ({ type, message, icon, onClose }) => {
   const handleClose = () => {
     if (onClose) {
       onClose();
