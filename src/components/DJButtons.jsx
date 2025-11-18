@@ -32,11 +32,12 @@ const DJButtons = ({
             Toggle Instrument
           </label>
           <div className="row mt-2 px-3">
-            {instruments.length === 0 ? (
+            {instruments && instruments.length === 0 ? (
               <div className="col">
                 <p>No instruments found</p>
               </div>
             ) : (
+              instruments &&
               instruments.map((instrument) => (
                 <div
                   className="col-sm-3 form-check form-switch"

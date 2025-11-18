@@ -15,5 +15,17 @@ export const saveConfig = (config) => {
 export const loadConfig = async (file) => {
   const text = await file.text();
   const config = JSON.parse(text);
+  if (!config) {
+    throw new Error("Invalid JSON file");
+  }
+  if (
+    !config.songText ||
+    !config.volume ||
+    !config.cpsMultiplier ||
+    !config.instruments
+  ) {
+    throw new Error("Invalid JSON file");
+  }
+
   return config;
 };
